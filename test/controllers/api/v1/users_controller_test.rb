@@ -21,7 +21,7 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
     assert_response :created
   end
 
-  test 'should not craete user with email address already in use' do
+  test 'should not create user with email address already in use' do
     assert_no_difference('User.count') do
       post api_v1_users_url, params: { user: { email: @user.email, password: '123456'} }, as: :json
     end
@@ -37,5 +37,12 @@ class Api::V1::UsersControllerTest < ActionDispatch::IntegrationTest
   test 'should not update user with invalid parameters' do
     patch api_v1_user_url(@user), params: { user: { email: 'email', password: '123456' } }, as: :json
     assert_response :unprocessable_entity
+  end
+
+  test 'should destroy user' do
+    assert_difference('User.count', -1) do
+      delete api_v1_user_url(@user), as: :json
+    end
+    assert_response :no_content
   end
 end
